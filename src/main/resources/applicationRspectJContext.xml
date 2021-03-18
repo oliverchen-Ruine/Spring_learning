@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/aop
+            http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+            http://www.springframework.org/schema/context
+            http://www.springframework.org/schema/context/spring-context.xsd">
+    <!--AspectJ开发AOP-->
+    <bean id="customerDao" class="com.CustomerDaoImp"/>
+    <bean id="myAspect1" class="com.aspectJ.xml.MyAspect"/>
+    <!--AOP编程-->
+    <aop:config>
+        <aop:aspect ref="myAspect1">
+            <!--配置切入点，通知最后增强哪些方法-->
+            <aop:pointcut id="myPointcut" expression="execution( * com.*.*(..))"/>
+            <!--前置通知，关联通知Active和切入点pointcut-->
+            <aop:before method="myBefore" pointcut-ref="myPointcut"/>
+            <aop:after-returning method="myAfterReturning" pointcut-ref="myPointcut"/>
+            <aop:around method="myAround" pointcut-ref="myPointcut"/>
+            <aop:after-throwing method="myAfterThrowing" pointcut-ref="myPointcut" throwing="throwable"/>
+            <aop:after method="myAfter" pointcut-ref="myPointcut"/>
+        </aop:aspect>
+    </aop:config>
+    <!--扫描含com.mengma包下的所有注解-->
+    <context:component-scan base-package="com.aspectJ.annotation"/>
+    <!-- 使切面开启自动代理 -->
+    <aop:aspectj-autoproxy></aop:aspectj-autoproxy>
+</beans>

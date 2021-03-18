@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd"
+       xmlns:aop="http://www.springframework.org/schema/aop">
+        <bean id="test" class="com.SayHelloWorld" scope="singleton"/>
+        <bean id="person1" class="com.model.Person">
+                <property name="name" value="Oliver"/>
+                <property name="age" value="21"/>
+        </bean>
+        <bean id="person2" class="com.model.Person">
+                <constructor-arg index="0" value="Jack"/>
+                <constructor-arg index="1" value="18"/>
+        </bean>
+        <!--注解方式实现控制反转--><!--<context:component-scan base-package="com.annotation"/>-->
+        <bean id="sayHelloWorldDao" class="com.annotation.SayHelloWorldDao"/>
+        <bean id="sayHelloWorldService" class="com.annotation.SayHelloWorldService" autowire="byName"/>
+        <bean id="sayHelloWorldAction" class="com.annotation.SayHelloWorldAction" autowire="byName"/>
+         <!--spring通知实现AOP切面-->
+        <!--目标类-->
+        <bean id="customerDaoImp" class="com.CustomerDaoImp"/>
+        <!--切面类-->
+        <bean id="myAspect" class="com.factorybean.MyAspect"/>
+        <!--生成代理对象-->
+        <bean id="customerPoxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+                <!--实现代理接口-->
+                <property name="proxyInterfaces" value="com.dao.CustomerDao"/>
+                <!--代理的目标对象-->
+                <property name="target" ref="customerDaoImp"/>
+                <!--用通知增强目标-->
+                <property name="interceptorNames" value="myAspect"/>
+                <!--如何生成代理，CGBIL:true,JDK:false-->
+                <property name="proxyTargetClass" value="false"/>
+        </bean>
+
+</beans>
